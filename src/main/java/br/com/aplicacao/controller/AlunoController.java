@@ -9,12 +9,17 @@ import com.amazonaws.services.cloudwatch.AmazonCloudWatch;
 import com.amazonaws.services.cloudwatch.AmazonCloudWatchClientBuilder;
 import com.amazonaws.services.cloudwatch.model.MetricDatum;
 import com.amazonaws.services.cloudwatch.model.PutMetricDataRequest;
+import com.amazonaws.services.cloudwatch.model.PutMetricDataResult;
+import com.amazonaws.services.cloudwatch.model.StandardUnit;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import software.amazon.awssdk.services.cloudwatch.model.Dimension;
 
 import java.util.Optional;
+
+import static br.com.aplicacao.metrics.CpuUsage.getCPULoad;
 
 @RestController
 @RequestMapping("/alunos")
@@ -28,6 +33,7 @@ public class AlunoController {
             .withCredentials(new AWSStaticCredentialsProvider(credentials))
             .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:4566", "us-east-1"))
             .build();
+
 
     @Autowired
     public AlunoController(MeterRegistry meterRegistry) {
@@ -43,6 +49,29 @@ public class AlunoController {
     public String getAlunos() {
         // Lógica para obter todos os alunos do banco de dados
         return "Lista de alunos";
+    }
+
+    @GetMapping("/cpu")
+    public PutMetricDataResult cpuUsageMetric(){
+
+
+        double cpuUsage = getCPULoad();
+
+        Dimension dimension = Dimension.builder()
+                .name("PC Matheus")
+                .value("1-b123455")
+                .build();
+
+        MetricDatum cpuUse = new MetricDatum()
+                .withMetricName("CPUUsage")
+                .withUnit(StandardUnit.Percent)
+                .withValue(cpuUsage);
+
+        PutMetricDataRequest request = new PutMetricDataRequest()
+                .withNamespace("TesteMetricaCpu")
+                .withMetricData(cpuUse);
+
+        return client.putMetricData(request);
     }
 
     @GetMapping("/{id}")
