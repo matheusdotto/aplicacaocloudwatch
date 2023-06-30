@@ -51,29 +51,6 @@ public class AlunoController {
         return "Lista de alunos";
     }
 
-    @GetMapping("/cpu")
-    public PutMetricDataResult cpuUsageMetric(){
-
-
-        double cpuUsage = getCPULoad();
-
-        Dimension dimension = Dimension.builder()
-                .name("PC Matheus")
-                .value("1-b123455")
-                .build();
-
-        MetricDatum cpuUse = new MetricDatum()
-                .withMetricName("CPUUsage")
-                .withUnit(StandardUnit.Percent)
-                .withValue(cpuUsage);
-
-        PutMetricDataRequest request = new PutMetricDataRequest()
-                .withNamespace("TesteMetricaCpu")
-                .withMetricData(cpuUse);
-
-        return client.putMetricData(request);
-    }
-
     @GetMapping("/{id}")
     public Optional<Aluno> getAluno(@PathVariable Long id) {
         return Optional.ofNullable(alunoRepository.findById(id).orElseThrow(() -> new RuntimeException("Aluno não encontrado")));
