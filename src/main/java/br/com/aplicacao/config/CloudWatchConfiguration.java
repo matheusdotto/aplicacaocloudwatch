@@ -5,6 +5,7 @@ import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.regions.Regions;
+import com.amazonaws.services.cloudwatch.model.MetricDatum;
 import com.amazonaws.services.logs.AWSLogs;
 import com.amazonaws.services.logs.AWSLogsClientBuilder;
 import org.springframework.context.annotation.Bean;
@@ -33,4 +34,5 @@ public class CloudWatchConfiguration {
                 .build();
         return cloudWatchlog;
     }
+
 }

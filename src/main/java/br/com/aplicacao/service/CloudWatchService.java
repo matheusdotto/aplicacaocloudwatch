@@ -21,7 +21,7 @@ public class CloudWatchService {
     private AWSLogs cloudWatchlog;
 
     private static String logGroupName = "Aluno";
-    private static String logStreamName = "my-user-app-log-stream";
+    private static String logStreamName = "TesteLogStream";
 
     /**
      * Method that logs message to CloudWatch using existing LogGroupName and

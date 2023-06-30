@@ -2,6 +2,13 @@ package br.com.aplicacao.controller;
 
 import br.com.aplicacao.domain.Aluno;
 import br.com.aplicacao.repository.AlunoRepository;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.client.builder.AwsClientBuilder;
+import com.amazonaws.services.cloudwatch.AmazonCloudWatch;
+import com.amazonaws.services.cloudwatch.AmazonCloudWatchClientBuilder;
+import com.amazonaws.services.cloudwatch.model.MetricDatum;
+import com.amazonaws.services.cloudwatch.model.PutMetricDataRequest;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +21,13 @@ import java.util.Optional;
 public class AlunoController {
 
     private final Counter totalAlunosMetric;
+
+    BasicAWSCredentials credentials = new BasicAWSCredentials("12345", "12345");
+
+    AmazonCloudWatch client = AmazonCloudWatchClientBuilder.standard()
+            .withCredentials(new AWSStaticCredentialsProvider(credentials))
+            .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:4566", "us-east-1"))
+            .build();
 
     @Autowired
     public AlunoController(MeterRegistry meterRegistry) {
@@ -37,10 +51,22 @@ public class AlunoController {
 
     }
 
+
     @PostMapping
     public Aluno createAluno(@RequestBody Aluno aluno) {
+
         alunoRepository.save(aluno);
         totalAlunosMetric.increment();
+        MetricDatum datum = new MetricDatum()
+                .withMetricName("Alunos")
+                .withUnit("Count")
+                .withValue(totalAlunosMetric.count());
+
+        PutMetricDataRequest request = new PutMetricDataRequest()
+                .withNamespace("TesteMetrica")
+                .withMetricData(datum);
+
+        client.putMetricData(request);
         return aluno;
     }
 
