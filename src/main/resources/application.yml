@@ -1,0 +1,5 @@
+aws:
+  accessKey: 12345
+  secretKey: 12345
+  region: us-east-1
+  endpoint: http://localhost:4546

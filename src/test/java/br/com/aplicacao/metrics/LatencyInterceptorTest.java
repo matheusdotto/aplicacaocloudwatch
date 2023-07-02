@@ -9,14 +9,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import software.amazon.awssdk.services.cloudwatch.model.StandardUnit;
-import static org.mockito.Mockito.*;
-import static org.mockito.ArgumentMatchers.*;
 
-import java.time.Duration;
 import java.time.Instant;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class LatencyInterceptorTest {
 

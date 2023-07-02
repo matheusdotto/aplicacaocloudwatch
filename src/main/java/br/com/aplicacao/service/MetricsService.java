@@ -1,6 +1,6 @@
 package br.com.aplicacao.service;
 
-import br.com.aplicacao.config.CloudWatchBuilder;
+import br.com.aplicacao.config.CloudWatchBuilderStub;
 import br.com.aplicacao.metrics.CpuUsage;
 import com.amazonaws.services.cloudwatch.model.MetricDatum;
 import com.amazonaws.services.cloudwatch.model.PutMetricDataRequest;
@@ -26,6 +26,6 @@ public class MetricsService {
                 .withNamespace("CpuMetric")
                 .withMetricData(cpuUse);
 
-        return CloudWatchBuilder.cloudWatchBuilder().putMetricData(request);
+        return CloudWatchBuilderStub.cloudWatchBuilder().putMetricData(request);
     }
 }
